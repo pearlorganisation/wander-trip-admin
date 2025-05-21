@@ -7,8 +7,14 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body>
         <ReduxProvider>
-        <WanderTripSidebar />
-         {children}
+           <div className="flex h-screen">
+             <WanderTripSidebar />
+
+            {/* Main content grows to fill remaining space and scrolls */}
+            <main className="flex-1 overflow-auto">
+              {children}
+            </main>
+          </div>
         </ReduxProvider>
       </body>
     </html>
