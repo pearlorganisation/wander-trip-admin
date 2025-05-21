@@ -11,13 +11,11 @@ import {
   Settings,
 } from "lucide-react";
 
-export function WanderTripSidebar({ className, ...props }) {
+export function WanderTripSidebar() {
   return (
     <div
-      className={`flex flex-col h-screen w-64 bg-gradient-to-b from-[#0a1525] to-[#1c2a44] text-white shadow-lg ${
-        className || ""
-      }`}
-      {...props}
+      className={`flex flex-col h-screen w-64 bg-gradient-to-b from-[#0a1525] to-[#1c2a44] text-white shadow-lg`}
+   
     >
       {/* Header */}
       <div className="p-5 border-b border-white/10">
