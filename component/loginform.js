@@ -1,43 +1,38 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
+import { useForm } from "react-hook-form";
 
 export function LoginForm() {
-  const [isLoading, setIsLoading] = useState(false);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm();
+
   const router = useRouter();
 
-  const handleSubmit = async () => {
-    e.preventDefault();
-    setError("");
-
-    if (!email || !password) {
-      setError("Please fill in all fields");
-      return;
-    }
-
+  const onSubmit = async (data) => {
     try {
-      setIsLoading(true);
+      console.log("Form Data", data);
       // Simulate API call
       await new Promise((resolve) => setTimeout(resolve, 1500));
       router.push("/dashboard");
     } catch (err) {
-      setError("Invalid email or password");
-    } finally {
-      setIsLoading(false);
+      // Handle login error if needed
+      console.error("Login failed", err);
     }
   };
 
   return (
     <form
-      onSubmit={handleSubmit}
+      onSubmit={handleSubmit(onSubmit)}
       className="space-y-6 max-w-md mx-auto p-6 bg-white shadow-md rounded-md"
     >
+      {/* Email */}
       <div className="space-y-2">
         <label
           htmlFor="email"
@@ -48,14 +43,22 @@ export function LoginForm() {
         <input
           id="email"
           type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
           placeholder="you@example.com"
-          required
+          {...register("email", {
+            required: "Email is required",
+            pattern: {
+              value: /^\S+@\S+$/i,
+              message: "Invalid email format",
+            },
+          })}
           className="w-full px-4 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
+        {errors.email && (
+          <p className="text-sm text-red-500">{errors.email.message}</p>
+        )}
       </div>
 
+      {/* Password */}
       <div className="space-y-2">
         <div className="flex items-center justify-between">
           <label
@@ -66,7 +69,7 @@ export function LoginForm() {
           </label>
           <Link
             href="/forgot-password"
-            className="text-sm font-medium text-blue-600 hover:underline"
+            className="text-sm text-blue-600 hover:underline"
           >
             Forgot password?
           </Link>
@@ -74,15 +77,17 @@ export function LoginForm() {
         <input
           id="password"
           type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
+          {...register("password", {
+            required: "Password is required",
+          })}
           className="w-full px-4 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
+        {errors.password && (
+          <p className="text-sm text-red-500">{errors.password.message}</p>
+        )}
       </div>
 
-      {error && <div className="text-sm text-red-500">{error}</div>}
-
+      {/* Remember Me */}
       <div className="flex items-center space-x-2">
         <input
           type="checkbox"
@@ -94,16 +99,17 @@ export function LoginForm() {
         </label>
       </div>
 
+      {/* Submit Button */}
       <button
         type="submit"
         className={`w-full flex items-center justify-center px-4 py-2 text-white font-medium rounded-md ${
-          isLoading
+          isSubmitting
             ? "bg-blue-400 cursor-not-allowed"
             : "bg-blue-600 hover:bg-blue-700"
         }`}
-        disabled={isLoading}
+        disabled={isSubmitting}
       >
-        {isLoading ? (
+        {isSubmitting ? (
           <>
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
             Signing in...
@@ -113,6 +119,7 @@ export function LoginForm() {
         )}
       </button>
 
+      {/* Sign up link */}
       <div className="text-center text-sm text-gray-700">
         Don't have an account?{" "}
         <Link
