@@ -5,6 +5,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
 import { useForm } from "react-hook-form";
+import { useDispatch } from "react-redux";
+import { loginUser } from "@/lib/redux/actions/userAction";
 
 export function LoginForm() {
   const {
@@ -12,15 +14,20 @@ export function LoginForm() {
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm();
-
+  const dispatch = useDispatch();
   const router = useRouter();
 
   const onSubmit = async (data) => {
     try {
       console.log("Form Data", data);
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-      router.push("/dashboard");
+      dispatch(loginUser({ email: data.email, password: data.password })).then(
+        (res) => {
+          if (res.payload.success == true) {
+            router.push("/dashboard");
+          }
+        }
+      );
+      // router.push("/dashboard");
     } catch (err) {
       // Handle login error if needed
       console.error("Login failed", err);
