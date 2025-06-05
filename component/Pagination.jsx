@@ -1,8 +1,7 @@
 import React from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
-const 
-Pagination = ({
+const Pagination = ({
   pagination,
   handlePageChange,
   startResult,
@@ -24,7 +23,7 @@ Pagination = ({
           <ChevronLeft className="h-4 w-4" />
         </button>
 
-        {pagination.pages.map((pageNum) => (
+        {pagination?.pages?.map((pageNum) => (
           <button
             key={pageNum}
             onClick={() => handlePageChange(pageNum)}
