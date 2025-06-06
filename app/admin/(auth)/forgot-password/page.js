@@ -3,6 +3,9 @@ import React from "react";
 import { useForm } from "react-hook-form";
 
 import { ForgetPassword } from "@/lib/redux/actions/authAction";
+import { useDispatch } from "react-redux";
+import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
 
 const ForgotPassword = () => {
   const {
@@ -11,11 +14,13 @@ const ForgotPassword = () => {
     formState: { errors, isSubmitting },
   } = useForm();
 
+  const dispatch = useDispatch();
+  const router = useRouter();
   const onSubmit = (data) => {
     dispatch(ForgetPassword({ email: data.email })).then((res) => {
       if (res.payload?.success === true) {
         toast.success("OTP has been sent successfully.");
-        navigate("/verify-otp", {
+        router.push("/verify-otp", {
           state: { email: data.email, type: "FORGOT_PASSWORD" },
         });
       } else {

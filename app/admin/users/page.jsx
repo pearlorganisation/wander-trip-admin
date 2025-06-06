@@ -11,7 +11,7 @@ import {
   Plus,
 } from "lucide-react";
 import Pagination from "@/component/Pagination";
-import { getAllUser } from "@/lib/redux/actions/userAction";
+import { getAllUser, getUserBySearch } from "@/lib/redux/actions/userAction";
 import { FaSearch, FaFilter, FaSyncAlt, FaDownload } from "react-icons/fa";
 
 function formatDate(dateString) {
@@ -47,24 +47,25 @@ function getInitials(fullName = "") {
 
 const UserList = () => {
   const dispatch = useDispatch();
-  const { users = [], pagination = {} } = useSelector((state) => state?.auth);
+  const { users = [], pagination = {} } = useSelector((state) => state?.users);
+  console.log(users, "gffgfgfusers");
   const [searchQuery, setSearchQuery] = useState("");
   console.log("searchquery", searchQuery);
   // Fetch page 1 on mount
   useEffect(() => {
     console.log("inside useeffcer change");
-    dispatch(getAllUser({ page: 1, limit: 10, searchQuery }));
+    dispatch(getAllUser({ page: 1, limit: 10 }));
   }, [dispatch]);
 
   const handlePageChange = (page) => {
     console.log("inside handle change");
-    dispatch(getAllUser({ page, limit: 10, searchQuery }));
+    dispatch(getUserBySearch({ page, limit: 10, searchQuery }));
   };
 
   // Stats
-  const totalUsers = users.length;
-  const verifiedUsers = users.filter((u) => u.isVerified).length;
-  const oauthUsers = users.filter((u) => u.oauthAccounts?.length > 0).length;
+  const totalUsers = users?.length;
+  const verifiedUsers = users?.filter((u) => u.isVerified).length;
+  const oauthUsers = users?.filter((u) => u.oauthAccounts?.length > 0).length;
 
   // Pagination calculations
   const currentPage = pagination?.current_page || 1;
@@ -202,8 +203,8 @@ const UserList = () => {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {users.length > 0 ? (
-                users.map((user) => {
+              {users?.length > 0 ? (
+                users?.map((user) => {
                   const carpetArea = 0; // not used here
                   const expectedPrice = 0; // not used here
 
