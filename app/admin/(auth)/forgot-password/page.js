@@ -2,6 +2,8 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 
+import { ForgetPassword } from "@/lib/redux/actions/authAction";
+
 const ForgotPassword = () => {
   const {
     register,
@@ -9,10 +11,17 @@ const ForgotPassword = () => {
     formState: { errors, isSubmitting },
   } = useForm();
 
-  const onSubmit = async (data) => {
-    console.log("Password reset email sent to:", data.email);
-    // You would typically call your backend here:
-    // await axios.post('/api/forgot-password', { email: data.email });
+  const onSubmit = (data) => {
+    dispatch(ForgetPassword({ email: data.email })).then((res) => {
+      if (res.payload?.success === true) {
+        toast.success("OTP has been sent successfully.");
+        navigate("/verify-otp", {
+          state: { email: data.email, type: "FORGOT_PASSWORD" },
+        });
+      } else {
+        toast.error("Failed to send OTP.");
+      }
+    });
   };
 
   return (

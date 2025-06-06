@@ -76,7 +76,7 @@ const UserList = () => {
   useEffect(() => {
     const delay = setTimeout(() => {
       handlePageChange(1);
-    }, 300); 
+    }, 300);
 
     return () => clearTimeout(delay);
   }, [searchQuery]);
@@ -107,20 +107,20 @@ const UserList = () => {
             </div>
 
             {/* Filter Button */}
-            <button className="flex items-center gap-1 bg-gray-50 border border-gray-200 px-4 py-2 rounded-lg text-sm text-gray-700 hover:bg-gray-100">
+            {/* <button className="flex items-center gap-1 bg-gray-50 border border-gray-200 px-4 py-2 rounded-lg text-sm text-gray-700 hover:bg-gray-100">
               <FaFilter className="text-gray-500" />
               <span>Filters</span>
-            </button>
+            </button> */}
 
             {/* Refresh Button */}
-            <button className="flex items-center justify-center bg-gray-50 border border-gray-200 p-2 rounded-lg hover:bg-gray-100">
+            {/* <button className="flex items-center justify-center bg-gray-50 border border-gray-200 p-2 rounded-lg hover:bg-gray-100">
               <FaSyncAlt className="text-gray-500" />
-            </button>
+            </button> */}
 
             {/* Download Button */}
-            <button className="flex items-center justify-center bg-gray-50 border border-gray-200 p-2 rounded-lg hover:bg-gray-100">
+            {/* <button className="flex items-center justify-center bg-gray-50 border border-gray-200 p-2 rounded-lg hover:bg-gray-100">
               <FaDownload className="text-gray-500" />
-            </button>
+            </button> */}
           </div>
 
           {/* Total Users Count */}

@@ -1,12 +1,12 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Loader2 } from "lucide-react";
+import { Loader2, Eye, EyeOff } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
-import { loginUser } from "@/lib/redux/actions/userAction";
+import { loginUser } from "@/lib/redux/actions/authAction";
 
 export function LoginForm() {
   const {
@@ -14,23 +14,29 @@ export function LoginForm() {
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm();
+
   const dispatch = useDispatch();
   const router = useRouter();
 
-  const onSubmit = async (data) => {
+  const [showPassword, setShowPassword] = useState(false);
+  const [responseError, setResponseError] = useState(""); // ❗ For backend error
+
+  const onSubmit = (data) => {
+    setResponseError(""); // clear any previous error
+
     try {
-      console.log("Form Data", data);
-      dispatch(loginUser({ email: data.email, password: data.password })).then(
-        (res) => {
-          if (res.payload.success == true) {
-            router.push("/dashboard");
-          }
-        }
+      const res = dispatch(
+        loginUser({ email: data.email, password: data.password })
       );
-      // router.push("/dashboard");
+
+      if (res.payload?.success === true) {
+        router.push("/dashboard");
+      } else {
+        setResponseError(res.payload?.message);
+      }
     } catch (err) {
-      // Handle login error if needed
-      console.error("Login failed", err);
+      console.error("Login error:", err);
+      setResponseError("Something went wrong. Please try again.");
     }
   };
 
@@ -75,36 +81,40 @@ export function LoginForm() {
             Password
           </label>
           <Link
-            href="/forgot-password"
+            href="/admin/forgot-password"
             className="text-sm text-blue-600 hover:underline"
           >
             Forgot password?
           </Link>
         </div>
-        <input
-          id="password"
-          type="password"
-          {...register("password", {
-            required: "Password is required",
-          })}
-          className="w-full px-4 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
+        <div className="relative">
+          <input
+            id="password"
+            type={showPassword ? "text" : "password"}
+            {...register("password", {
+              required: "Password is required",
+            })}
+            className="w-full px-4 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 pr-10"
+          />
+          <button
+            type="button"
+            onClick={() => setShowPassword((prev) => !prev)}
+            className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none"
+          >
+            {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+          </button>
+        </div>
         {errors.password && (
           <p className="text-sm text-red-500">{errors.password.message}</p>
         )}
       </div>
 
-      {/* Remember Me */}
-      <div className="flex items-center space-x-2">
-        <input
-          type="checkbox"
-          id="remember"
-          className="h-4 w-4 text-blue-600 border-gray-300 rounded"
-        />
-        <label htmlFor="remember" className="text-sm text-gray-700">
-          Remember me for 30 days
-        </label>
-      </div>
+      {/* ❗ Response Error */}
+      {responseError && (
+        <div className="text-sm text-red-600 border border-red-300 bg-red-50 rounded px-3 py-2">
+          {responseError}
+        </div>
+      )}
 
       {/* Submit Button */}
       <button
@@ -125,17 +135,6 @@ export function LoginForm() {
           "Sign in"
         )}
       </button>
-
-      {/* Sign up link */}
-      <div className="text-center text-sm text-gray-700">
-        Don't have an account?{" "}
-        <Link
-          href="/signup"
-          className="font-medium text-blue-600 hover:underline"
-        >
-          Sign up
-        </Link>
-      </div>
     </form>
   );
 }

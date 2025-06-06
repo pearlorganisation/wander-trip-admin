@@ -26,13 +26,15 @@ import { useForm } from "react-hook-form";
 import DeleteModal from "@/component/DeleteModal";
 import { toast } from "react-toastify";
 import Pagination from "@/component/Pagination";
-
+import { Sparkles } from "lucide-react";
 export default function DestinationsCards() {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [currentDestination, setCurrentDestination] = useState(null);
+  const [openAIModal, setOpenAIModal] = useState(false);
   const [openDeleteModal, setDeleteModal] = useState(false);
   const [addModal, setAddModal] = useState(false);
   const [id, setId] = useState();
+  const [isGenerating, setIsGenerating] = useState(false);
   const [editFormData, setEditFormData] = useState({
     name: "",
     slug: "",
@@ -214,10 +216,84 @@ export default function DestinationsCards() {
   const handlePageChange = (page) => {
     dispatch(getAlldestination({ page, limit: 10 }));
   };
+  const handleGenerate = () => {
+    setIsGenerating(true);
+    // Simulate API call
+    setTimeout(() => {
+      setIsGenerating(false);
+    }, 1500);
+  };
   return (
     <>
+      <div className=" bg-gray-50 py-4 px-4">
+        <div className="container mx-auto max-w-3xl">
+          {/* Header Section */}
+          <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
+            <p className="text-xl text-black mb-4">
+              Generate <strong>Best Time to Visit</strong>,{" "}
+              <strong>Recommended Duration</strong> and{" "}
+              <strong>Top Activities</strong> for all destinations.
+            </p>
+
+            <button
+              className="w-full bg-gradient-to-r bg-[#1eb4f3] text-white font-medium py-3 px-6 rounded-lg transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              onClick={handleGenerate}
+              disabled={isGenerating}
+            >
+              <Sparkles className="h-4 w-4" />
+              {isGenerating
+                ? "Generating AI Content..."
+                : "Generate AI Content"}
+            </button>
+          </div>
+
+          {/* <div className="space-y-6">
+          <div className="bg-white rounded-lg shadow-sm border border-gray-100">
+            <div className="p-6">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="bg-blue-500 p-2 rounded-lg flex items-center justify-center">
+                  <Calendar className="h-5 w-5 text-white" />
+                </div>
+                <h2 className="font-semibold text-lg text-gray-800">
+                  Best Time to Visit
+                </h2>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-lg shadow-sm border border-gray-100">
+            <div className="p-6">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="bg-green-500 p-2 rounded-lg flex items-center justify-center">
+                  <Clock className="h-5 w-5 text-white" />
+                </div>
+                <h2 className="font-semibold text-lg text-gray-800">
+                  Recommended Duration
+                </h2>
+              </div>
+            </div>
+          </div>
+
+          
+          <div className="bg-white rounded-lg shadow-sm border border-gray-100">
+            <div className="p-6">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="bg-orange-500 p-2 rounded-lg flex items-center justify-center">
+                  <Compass className="h-5 w-5 text-white" />
+                </div>
+                <h2 className="font-semibold text-lg text-gray-800">
+                  Top Activities
+                </h2>
+              </div>
+            </div>
+          </div>
+        </div> */}
+        </div>
+      </div>
       <div className="flex justify-between px-4 py-4">
-        <div></div>
+        <div>
+          <h1 className="text-3xl font-bold mb-2">Destinations</h1>
+        </div>
         <button
           onClick={() => setAddModal(true)}
           className="flex items-center gap-2 bg-[#1eb4f3] text-white px-4 py-2 rounded-full hover:bg-[#0da6e8] transition"
@@ -228,8 +304,6 @@ export default function DestinationsCards() {
       </div>
 
       <div className="container mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold mb-6">Popular Destinations</h1>
-
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {destinationsdata?.map((destination) => {
             return (
