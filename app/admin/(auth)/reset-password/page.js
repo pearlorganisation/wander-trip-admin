@@ -1,10 +1,12 @@
-import { useAppDispatch } from "@/hooks/dispatchHooks";
-import { ResetPaasword } from "@/lib/redux/Action/authAction";
+"use client";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useLocation, useNavigate } from "react-router-dom";
+
 import { toast } from "react-toastify";
 import { FaEye, FaRegEyeSlash } from "react-icons/fa";
+import { useDispatch } from "react-redux";
+import { useRouter } from "next/router";
+import { ResetPaasword } from "@/lib/redux/actions/authAction";
 
 const ResetPasswordPage = () => {
   const [showNewPassword, setShowNewPassword] = useState(false);
@@ -17,11 +19,11 @@ const ResetPasswordPage = () => {
     formState: { errors },
   } = useForm();
 
-  const navigate = useNavigate();
-  const location = useLocation();
-  const email = location.state?.email;
+  const router = useRouter();
 
-  const dispatch = useAppDispatch();
+  const email = useSearchParams().get("email");
+
+  const dispatch = useDispatch();
 
   const onSubmit = (data) => {
     if (data.newPassword !== data.confirmPassword) {
@@ -38,7 +40,7 @@ const ResetPasswordPage = () => {
     ).then((res) => {
       if (res.payload?.success === true) {
         toast.success("Password reset successfully");
-        navigate("/login");
+        router.push("/login");
       }
     });
   };
@@ -122,4 +124,3 @@ const ResetPasswordPage = () => {
 };
 
 export default ResetPasswordPage;
-    

@@ -4,9 +4,10 @@ import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { ChevronDown, MapPin, Calendar, Star } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllReviews } from "../../lib/redux/actions/reviewAction";
+
 import moment from "moment"; // Optional: use for better date formatting
 import { FaStar, FaStarHalfAlt, FaRegStar } from "react-icons/fa";
+import { getAllReviews } from "@/lib/redux/actions/reviewAction";
 export default function ReviewsPage() {
   const [selectedRating, setSelectedRating] = useState("1");
   const [selectedSort, setSelectedSort] = useState("newest");

@@ -1,35 +1,34 @@
-import { useAppDispatch } from "@/hooks/dispatchHooks";
+"use client";
+
 import { verifyOtp } from "@/lib/redux/actions/authAction";
+import { useRouter } from "next/router";
 
 import React, { useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+
 import { toast } from "sonner";
 const OTPPage = () => {
   const [otp, setOtp] = useState("");
   const [message, setMessage] = useState("");
 
-  const navigate = useNavigate();
-  const location = useLocation();
-  const email = location.state?.email;
-  const type = location.state?.type;
-
-  const dispatch = useAppDispatch();
-  const handleVerifyOTP = async () => {
+  const router = useRouter();
+  const dispatch = useDispatch();
+  const handleVerifyOTP = () => {
     if (!email || !otp || otp.length !== 4) {
       setMessage("Email and valid 4-digit OTP are required");
       return;
     }
 
     try {
-      const res = await dispatch(verifyOtp({ email, otp, type }));
+      const res = dispatch(verifyOtp({ email, otp, type }));
 
       if (res.payload?.success) {
         toast.success(res.payload.message || "OTP verified successfully");
 
         if (res.payload.action === "RESET_PASSWORD") {
-          navigate("/reset-password", { state: { email } }); // <-- fix typo from "/rest-paasword"
+          router.push(`/reset-password?email=${encodeURIComponent(email)}`);
         } else {
-          navigate("/login");
+          router.push("/login");
         }
       } else {
         setMessage(res.payload?.message || "OTP verification failed");
